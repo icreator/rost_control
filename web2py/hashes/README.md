@@ -1,4 +1,4 @@
-Application folder
+Application folder for web2py (http://web2py.com/books/default/chapter/29/13/deployment-recipes#Apache-setup)
 
 #HASHES
 
