@@ -1,1 +1,1 @@
-copy it to web2py/applications/
+it is application for folder web2py/applications/
