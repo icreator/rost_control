@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from gluon import *
+from gluon.contrib.appconfig import AppConfig
+## once in production, remove reload=True to gain full speed
+myconf = AppConfig(reload=True)
+
+IN_FOLDER = myconf.take('files.in_folder')
+OUT_FOLDER = myconf.take('files.out_folder')
 
 #!/usr/bin/env python
 # coding: utf8
@@ -40,30 +46,30 @@ def hash_file(in_folder, out_folder, basename, extension):
     fd = open(path_filename, 'rb')
     h.update(fd.read())
     fd.close()
-    
+
     hash58 = base58.b58encode(h.digest())
 
     return hash58
 
 
 def dir_hash(db):
-    
+
     response.no_function = True
     ##fname = os.path.join(dirname, filename).replace('\\', '/')
-    in_folder = u'C:/uik_test/'.replace('\\', '/')
-    out_folder = u'C:/web2py/applications/hashes/static/hashes/'.replace('\\', '/')
+    in_folder = IN_FOLDER.replace('\\', '/')
+    out_folder = OUT_FOLDER.replace('\\', '/')
     used_extensions = ['.jpg', '.png', '.gif']
 
     rename = []
     for f_user in os.listdir(in_folder):
-        
+
         in_folder_user = os.path.join(in_folder, f_user)
         print 'user folder:', in_folder_user
         if not os.path.isdir(in_folder_user):
             continue
 
         for name in os.listdir(in_folder_user):
-        
+
             basename, extension = os.path.splitext(name)
             print 'basename, extension:', basename, extension
             name_items = basename.split(' ')
@@ -105,7 +111,7 @@ def dir_hash(db):
             db.t_files.insert(f_tik = f_tik, f_uik = f_uik, f_user = f_user,
                              f_date = date_time, f_hash = hash58,
                              f_name = f_name, f_ext = extension)
-    
+
         db.commit()
         # if COMMIT is OK
         for item in rename:
@@ -137,7 +143,7 @@ def dir_hash(db):
                             continue
 
 
-        
+
     return
 
 def get(db, not_local, interval=None):
@@ -148,9 +154,9 @@ def get(db, not_local, interval=None):
     i_p3 = period3 = interval * 3
     while True:
 
-        
+
         print '\n', datetime.now()
-        
+
         dir_hash(db)
         db.commit()
 

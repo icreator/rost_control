@@ -2,14 +2,17 @@
 # -*- coding: utf-8 -*-
 from gluon import *
 
-# http://127.0.0.1:9085/rec_hashes?creator=78JFPWVVAVP3WW7S8HPgSkt24QF2vsGiS5&feepow=0&password=1&url=123
-## 185.146.168.226:9085 - 7KE2eM1sQTPK3pkUmHPcbxL6wFEmxsQYGG
-URL_CHAIN_API = 'http://185.146.168.226:9085/rec_hashes'
-URL_FILES_SITE = 'http://rost.ru/v2016/'
-CHAIN_DATA = 'WWW' #'Контроль выборов 2016 от партии Роста'
-CHAIN_PASSWORD = '1'
-CHAIN_CREATOR = '7KE2eM1sQTPK3pkUmHPcbxL6wFEmxsQYGG'
-CHAIN_FEEPOW = '0'
+from gluon.contrib.appconfig import AppConfig
+## once in production, remove reload=True to gain full speed
+myconf = AppConfig(reload=True)
+
+URL_FILES_SITE = myconf.take('site.url')
+
+URL_DATACHAIN_API = myconf.take('datachain.url_api')
+CHAIN_DATA = myconf.take('datachain.data')
+CHAIN_PASSWORD = myconf.take('datachain.password')
+CHAIN_CREATOR = myconf.take('datachain.creator')
+CHAIN_FEEPOW = myconf.take('datachain.feepow')
 
 import os
 import hashlib
@@ -56,21 +59,21 @@ def make_record(db):
             continue
         hashes.append(rec.f_hash)
         recs_to_chain.append(rec.id)
-    
+
     if len(recs_to_chain) == 0:
         return None, None
-    
+
     #print '-'.join(hashes) ## urllib.urlencode
     params = json.dumps({ 'password': CHAIN_PASSWORD, 'creator': CHAIN_CREATOR, 'feepow': CHAIN_FEEPOW,
               'url': URL_FILES_SITE, 'data': CHAIN_DATA, 'hashes': '-'.join(hashes) })
-    print params
+    #print params
     ## POST
     try:
         api_func = urllib.urlopen(URL_CHAIN_API, params)
         result = api_func.read()
     except Exception, e:
         return e, None
-    
+
     print result
     if 'signature' in result:
         txid = result['signature']
@@ -78,12 +81,12 @@ def make_record(db):
             if rec.f_txid1_datachain != None and len(rec.f_txid1_datachain) > 30:
                 continue
             rec.update_record( f_txid1_datachain = txid)
-        
+
 
         ###### COMMIT in ANY case
         t_values.update_record( f_files_txid_1 = last_record_id )
         db.commit()
-        
+
     return None, result
 
 def run(db, not_local, interval=None):
@@ -95,7 +98,7 @@ def run(db, not_local, interval=None):
     while True:
 
         print '\n', datetime.now()
-        
+
         make_record(db)
 
         print 'sleep:', interval
