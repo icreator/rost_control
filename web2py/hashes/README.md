@@ -31,26 +31,3 @@ IP_сервера/hashes/api/get.json/[с номера записи]/[сколь
 ###;uri       = sqlite://storage.sqlite
 ###uri       = mysql://root:1234567Uu@localhost/rost
 ###migrate   = false
-
-[app]
-name = DATACHAINS.World
-develop = 
-
-author      = Your Name <you@example.com>
-description = a cool new app
-keywords    = web2py, python, framework
-generator   = Web2py Web Framework
-
-; Host configuration
-[host]
-names = localhost:*, 127.0.0.1:*, *:*, *
-
-; db configuration
-[db]
-;uri       = sqlite://storage.sqlite
-uri       = mysql://root:1234567Uu@localhost/rost
-
-migrate   = false
-pool_size = 10 ; ignored for sqlite
-
-
