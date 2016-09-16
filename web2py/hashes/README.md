@@ -1,4 +1,4 @@
-Applocation folder
+Application folder
 
 #HASHES
 
