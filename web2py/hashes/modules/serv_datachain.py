@@ -60,6 +60,7 @@ def make_record(db):
         hashes.append(rec.f_hash)
         recs_to_chain.append(rec.id)
 
+    print 'found hashes:', hashes
     if len(recs_to_chain) == 0:
         return None, None
 
@@ -69,12 +70,12 @@ def make_record(db):
     #print params
     ## POST
     try:
-        api_func = urllib.urlopen(URL_CHAIN_API, params)
+        api_func = urllib.urlopen(URL_DATACHAIN_API, params)
         result = api_func.read()
     except Exception, e:
+        print e
         return e, None
 
-    print result
     if 'signature' in result:
         txid = result['signature']
         for rec in recs:
@@ -82,10 +83,10 @@ def make_record(db):
                 continue
             rec.update_record( f_txid1_datachain = txid)
 
-
-        ###### COMMIT in ANY case
         t_values.update_record( f_files_txid_1 = last_record_id )
         db.commit()
+    else:
+        print result
 
     return None, result
 
