@@ -13,7 +13,7 @@ def get():
     if limit_rec and from_rec:
         recs = db().select(db.t_files.ALL, limitby=(from_rec, from_rec + limit_rec))
     else:
-        recs = db(db.t_files).select(0, limit_rec)
+        recs = db(db.t_files).select(limitby=(0, limit_rec))
         
     rows = {}
     for row in recs:
@@ -37,7 +37,7 @@ def set_txid1():
     if limit_rec and from_rec:
         recs = db().select(db.t_files.ALL, limitby=(from_rec, from_rec + limit_rec))
     else:
-        recs = db(db.t_files).select(0, limit_rec)
+        recs = db(db.t_files).select(limitby=(0, limit_rec))
 
     for row in recs:
         #if row.f_txid1_datachain != None or len(row.f_txid1_datachain) > 60:
