@@ -10,13 +10,13 @@ def ini_uiks():
     else:
         return ' already initiated'
     
+    IN_FOLDER = myconf.take('files.in_folder').replace('\\', '/')
     INI_UIKS = myconf.take('files.ini_uiks')
-    IN_FOLDER = myconf.take('files.in_folder')
-    f = open(os.path.join(IN_FOLDER, INI_UIKS))
+    f = open(os.path.join(request.folder, INI_UIKS))
     for line in f.readlines():
         fields = line.split(';')
         kod = fields[1].split('-')
-        ##print kod
+        #print kod
 
         try:
             db.t_uik.insert(f_name = fields[0], f_kod = kod[0], f_tik = kod[1],
