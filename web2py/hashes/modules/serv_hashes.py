@@ -5,6 +5,7 @@ from gluon.contrib.appconfig import AppConfig
 ## once in production, remove reload=True to gain full speed
 myconf = AppConfig(reload=True)
 
+#INI_UIKS = myconf.take('files.ini_uiks')
 IN_FOLDER = myconf.take('files.in_folder')
 OUT_FOLDER = myconf.take('files.out_folder')
 
@@ -35,7 +36,6 @@ def log_commit(db, l2, mess='>'):
     log(db, l2, mess)
     db.commit()
 
-
 #filename = u'Снимок экрана (4).png'
 #in_folder = u'C:/Users/adm/Pictures/Screenshots/'
 #out_folder = u'C:/rost/3456/'
@@ -54,8 +54,6 @@ def hash_file(in_folder, out_folder, basename, extension):
 
 def dir_hash(db):
 
-    response.no_function = True
-    ##fname = os.path.join(dirname, filename).replace('\\', '/')
     in_folder = IN_FOLDER.replace('\\', '/')
     out_folder = OUT_FOLDER.replace('\\', '/')
     used_extensions = ['.jpg', '.png', '.gif']
