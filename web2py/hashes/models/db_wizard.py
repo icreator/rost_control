@@ -31,8 +31,10 @@ db.define_table('t_uik',
           comment = T('ссылка для файлов')),
     Field('f_kod', type='integer',
           label=T('Код')),
-    auth.signature,
+    Field('f_tik', type='integer',
+          label=T('Код ТИК')),
     format='%(f_name)s',
+    #fake_migrate=True,
     migrate=settings.migrate)
 
 ########################################
@@ -42,7 +44,7 @@ db.define_table('t_files',
           label=T('ТИК')),
     Field('f_uik', type='integer',
           label=T('УИК')),
-    Field('f_user', type='integer',
+    Field('f_user', type='string',
           label=T('ОПЕРАТОР')),
     Field('f_date', type='datetime',
           label=T('Время создания'),
@@ -67,6 +69,8 @@ db.define_table('t_files',
 
 if db(db.t_files).isempty():
     db.t_files.truncate()
+    #import serv_hashes
+    #serv_hashes.ini_uiks(db)
 
 db.define_table('t_values',
     Field('f_files_count', type='integer',
