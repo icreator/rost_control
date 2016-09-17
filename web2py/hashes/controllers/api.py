@@ -1,6 +1,35 @@
 # -*- coding: utf-8 -*-
+
 response.generic_patterns = ['json', 'html']
 
+# init folders
+def ini_uiks():
+    import os
+    if db(db.t_uik).isempty():
+        db.t_uik.truncate()
+    else:
+        return ' already initiated'
+    
+    INI_UIKS = myconf.take('files.ini_uiks')
+    IN_FOLDER = myconf.take('files.in_folder')
+    f = open(os.path.join(IN_FOLDER, INI_UIKS))
+    for line in f.readlines():
+        fields = line.split(';')
+        kod = fields[1].split('-')
+        ##print kod
+
+        try:
+            db.t_uik.insert(f_name = fields[0], f_kod = kod[0], f_tik = kod[1],
+                        f_url = fields[2])
+        except:
+            continue
+
+        try:
+            os.mkdir(os.path.join(IN_FOLDER,fields[1]))
+        except:
+            pass
+        
+        
 def get():
     from_rec = request.args(0) or 0
     limit_rec = request.args(1) or 100
@@ -10,6 +39,10 @@ def get():
     except:
         return {'error':'error'}
         
+    if (request.vars.get('update')):
+        import serv_hashes
+        serv_hashes.dir_hash(db)
+
     if limit_rec and from_rec:
         recs = db().select(db.t_files.ALL, limitby=(from_rec, from_rec + limit_rec))
     else:
