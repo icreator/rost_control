@@ -7,10 +7,12 @@ def proc():
     import os
     import base58
     import serv_hashes
+    from datetime import datetime
     
     in_folder = myconf.take('files.in_folder').replace('\\', '/')
     used_extensions = None #['.jpg', '.png', '.gif']
 
+    stop_counter = 100
     for f_user in os.listdir(in_folder):
 
         in_folder_user = os.path.join(in_folder, f_user)
@@ -19,10 +21,10 @@ def proc():
             continue
 
         last_name = None
-        folder_counter_rec = db(db.t_folders.f_folder == f_user).select().first()
+        folder_counter_rec = db(db.t_folder.f_folder == f_user).select().first()
         if folder_counter_rec == None:
-            folder_counter_rec_id = db.t_folders.insert( f_folder = f_user)
-            folder_counter_rec = db.t_folders[folder_counter_rec_id]
+            folder_counter_rec_id = db.t_folder.insert( f_folder = f_user)
+            folder_counter_rec = db.t_folder[folder_counter_rec_id]
         
         folder_counter = folder_counter_rec.f_counter
         
@@ -31,6 +33,10 @@ def proc():
 
             current_folder_counter += 1
             last_name = name
+            stop_counter -= 1
+            if stop_counter < 0:
+                db.commit()
+                return
 
             if current_folder_counter <= folder_counter:
                 continue
