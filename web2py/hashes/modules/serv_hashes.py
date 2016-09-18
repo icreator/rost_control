@@ -38,8 +38,7 @@ def log_commit(db, l2, mess='>'):
 
 #filename = u'Снимок экрана (4).png'
 #in_folder = u'C:/Users/adm/Pictures/Screenshots/'
-#out_folder = u'C:/rost/3456/'
-def hash_file(in_folder, out_folder, basename, extension):
+def hash_file(in_folder, basename, extension):
     path_filename = os.path.join(in_folder, basename + extension)
     # m = hashlib.md5()
     h = hashlib.new('sha256') # выбор алгоритма
@@ -95,7 +94,7 @@ def dir_hash(db):
 
             print 'USER:', f_user, 'name_items:', name_items
 
-            hash58 = hash_file( os.path.join(in_folder_user, in_folder_user), out_folder, basename, extension)
+            hash58 = hash_file( in_folder_user, basename, extension)
 
             print hash58
 
