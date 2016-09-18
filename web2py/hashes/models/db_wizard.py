@@ -72,6 +72,18 @@ if db(db.t_files).isempty():
     #import serv_hashes
     #serv_hashes.ini_uiks(db)
 
+    
+db.define_table('t_folders',
+    Field('f_folder',
+          label=T('folder')),
+    Field('f_counter', 'integer', default = 0,
+          label=T('last file')),
+    Field('f_last_file',
+          label=T('last file')),
+    format='%(f_folder)s',
+    migrate=settings.migrate)
+
+
 db.define_table('t_values',
     Field('f_files_count', type='integer',
           default = 0,
