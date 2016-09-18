@@ -13,6 +13,7 @@ def proc():
     used_extensions = None #['.jpg', '.png', '.gif']
 
     stop_counter = 100
+    
     for f_user in os.listdir(in_folder):
 
         in_folder_user = os.path.join(in_folder, f_user)
@@ -33,20 +34,16 @@ def proc():
 
             current_folder_counter += 1
             last_name = name
-            stop_counter -= 1
-            if stop_counter < 0:
-                db.commit()
-                return
 
             if current_folder_counter <= folder_counter:
                 continue
-            
+
             in_folder_user_file = os.path.join(in_folder_user, name)
             if os.path.isdir(in_folder_user_file):
                 continue
 
             basename, extension = os.path.splitext(name)
-            print 'basename, extension:', basename, extension
+            #print 'basename, extension:', basename, extension
             #if True:
             try:
                 name_items_2 = basename.split(' ')
@@ -67,11 +64,11 @@ def proc():
                     #print 'not ext:', extension
                     continue
 
-            print 'USER:', f_user, 'name_items:', name_items
+            #print 'USER:', f_user, 'name_items:', name_items
 
             hash58 = serv_hashes.hash_file( in_folder_user, basename, extension)
 
-            print hash58
+            #print hash58
 
             f_tik = name_items[0]
             f_uik = name_items[1]
@@ -86,16 +83,19 @@ def proc():
             ##rename.append([os.path.join(in_folder_user, name), f_tik, f_uik, f_name + extension])
 
             is_exist = db(db.t_files.f_hash == hash58).select().first()
-            if is_exist != None:
-                print 'already exist'
-                continue
+            if not is_exist:
+                date_time = datetime.now()
 
-            date_time = datetime.now()
-
-            #print date_time
-            db.t_files.insert(f_tik = f_tik, f_uik = f_uik, f_user = f_user,
-                             f_date = date_time, f_hash = hash58,
-                             f_name = f_name, f_ext = extension)
+                #print date_time
+                db.t_files.insert(f_tik = f_tik, f_uik = f_uik, f_user = f_user,
+                                 f_date = date_time, f_hash = hash58,
+                                 f_name = f_name, f_ext = extension)
+            
+            stop_counter -= 1
+            if stop_counter < 0:
+                folder_counter_rec.update_record( f_counter = current_folder_counter, f_last_file = last_name)
+                db.commit()
+                return '%s %s %s' % (f_user, name, current_folder_counter)
 
         folder_counter_rec.update_record( f_counter = current_folder_counter, f_last_file = last_name)
         
