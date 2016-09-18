@@ -1,7 +1,7 @@
 from gluon.storage import Storage
 settings = Storage()
 
-settings.migrate = True
+#settings.migrate = True
 settings.title = 'hashes of voting'
 settings.subtitle = 'blockchain hashes'
 settings.author = 'icreator'
