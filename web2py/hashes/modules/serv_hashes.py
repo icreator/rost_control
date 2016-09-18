@@ -56,23 +56,36 @@ def dir_hash(db):
 
     in_folder = IN_FOLDER.replace('\\', '/')
     out_folder = OUT_FOLDER.replace('\\', '/')
-    used_extensions = ['.jpg', '.png', '.gif']
+    used_extensions = None #['.jpg', '.png', '.gif']
 
-    rename = []
     for f_user in os.listdir(in_folder):
+        rename = []
 
         in_folder_user = os.path.join(in_folder, f_user)
-        print 'user folder:', in_folder_user
+        #print 'user folder:', in_folder_user
         if not os.path.isdir(in_folder_user):
             continue
 
         for name in os.listdir(in_folder_user):
 
+            if os.path.isdir(os.path.join(in_folder_user, name)):
+                continue
+
             basename, extension = os.path.splitext(name)
             print 'basename, extension:', basename, extension
-            name_items = basename.split(' ')
-            if len(name_items) < 3:
-                # it is not screenshoot
+            #if True:
+            try:
+                name_items_2 = basename.split(' ')
+                name_items = name_items_2[0].split('-')
+                #print name_items
+                name_items.append(name_items_2[1])
+                #print name_items
+                if len(name_items) < 3:
+                    #print 'len < 3'
+                    # it is not screenshoot
+                    continue
+            #else:
+            except:
                 continue
 
             if used_extensions:
@@ -82,7 +95,7 @@ def dir_hash(db):
 
             print 'USER:', f_user, 'name_items:', name_items
 
-            hash58 = hash_file(in_folder_user, out_folder, basename, extension)
+            hash58 = hash_file( os.path.join(in_folder_user, in_folder_user), out_folder, basename, extension)
 
             print hash58
 
@@ -123,7 +136,7 @@ def dir_hash(db):
                 os.rename(item[0], new_file_path_name)
             except:
                 try:
-                    os.mkdir(os.path.join(out_folder,item[1]))
+                    os.mkdir(os.path.join(out_folder, item[1]))
                     os.mkdir(os.path.join(out_folder, item[1], item[2]))
                     os.mkdir(os.path.join(out_folder, item[1], item[2], f_user))
                     os.rename(item[0], new_file_path_name)
