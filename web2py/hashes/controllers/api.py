@@ -12,7 +12,7 @@ def proc():
     in_folder = myconf.take('files.in_folder').replace('\\', '/')
     used_extensions = None #['.jpg', '.png', '.gif']
 
-    stop_counter = 100
+    stop_counter = 200
     
     for f_user in os.listdir(in_folder):
 
@@ -33,6 +33,7 @@ def proc():
         for name in os.listdir(in_folder_user):
 
             current_folder_counter += 1
+
             last_name = name
 
             if current_folder_counter <= folder_counter:
@@ -93,13 +94,13 @@ def proc():
             
             stop_counter -= 1
             if stop_counter < 0:
-                folder_counter_rec.update_record( f_counter = current_folder_counter, f_last_file = last_name)
+                folder_counter_rec.update_record( f_counter = current_folder_counter, f_last_file = name)
                 db.commit()
                 return '%s %s %s' % (f_user, name, current_folder_counter)
 
-        folder_counter_rec.update_record( f_counter = current_folder_counter, f_last_file = last_name)
-        
-        db.commit()
+        if current_folder_counter < folder_counter_rec.f_counter:
+            folder_counter_rec.update_record( f_counter = current_folder_counter, f_last_file = last_name)
+            db.commit()
 
 # init folders
 def ini_uiks():
